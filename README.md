@@ -72,7 +72,7 @@ Once setup completes, the MCP server will start. By default, it listens on port 
 {
   "servers": {
     "local-wikipedia": {
-      "url": "http://local-wikipedia:29423"
+      "url": "http://localhost:29423"
     }
   }
 }

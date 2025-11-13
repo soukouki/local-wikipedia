@@ -70,7 +70,7 @@ docker-compose up
 {
   "servers": {
     "local-wikipedia": {
-      "url": "http://local-wikipedia:29423"
+      "url": "http://localhost:29423"
     }
   }
 }
