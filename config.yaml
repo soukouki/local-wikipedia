@@ -1,0 +1,15 @@
+
+source:
+  # It takes several hours to download and process the English Wikipedia page.
+  # For instructions on specifying languages, please refer to the list at https://huggingface.co/datasets/HuggingFaceFW/finewiki.
+  language:
+    # - ja # Prioritize earlier written languages
+    # - en # English as fallback
+    - simple # It is much smaller and faster to process
+
+server:
+  # --- Optionally ---
+  # Limit the number of search results (default: 20)
+  max_search_results: 20
+  # Port for the MCP server (default: 29423)
+  port: 29423

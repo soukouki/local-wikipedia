@@ -1,0 +1,18 @@
+services:
+
+  # アクセス先
+  # "local-wikipedia": {
+  #  "url": "http://local-wikipedia:29423"
+  # }
+  local-wikipedia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "29423:29423"
+    volumes:
+      - ./src:/app/src:ro
+      - ./data:/app/data
+      - ./data/postgresql:/etc/postgresql/16/finewiki
+      - ./config.yaml:/app/config.yaml:ro
+    restart: unless-stopped
