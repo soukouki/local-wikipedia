@@ -20,6 +20,7 @@ from queue import Queue
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 import time
+import traceback
 
 # ========================================
 # パス設定
@@ -490,8 +491,13 @@ def page_producer(lang_code: str, meta: Dict) -> Tuple[str, bool, int]:
                                         chunk = []
                                     
                         except Exception as parse_error:
-                            print(f"  ⚠ Warning: Failed to parse line, skipping: {parse_error}", file=sys.stderr)
+                            print(f"⚠ Warning: Failed to parse line, skipping: {parse_error}", file=sys.stderr)
+                            print(f"  Type: {type(parse_error).__name__})", file=sys.stderr)
+                            print(f"  Message: {str(parse_error)}", file=sys.stderr)
+                            print(f"  Stacktrace:", file=sys.stderr)
+                            traceback.print_exc(file=sys.stderr)
                             continue
+
             
             # 残りのチャンクを追加
             if chunk:
@@ -950,7 +956,11 @@ def redirection_producer(lang_code: str, meta: Dict) -> Tuple[str, bool, int]:
                                     chunk = []
                                     
                         except Exception as parse_error:
-                            print(f"  ⚠ Warning: Failed to parse line, skipping: {parse_error}", file=sys.stderr)
+                            print(f"⚠ Warning: Failed to parse line, skipping: {parse_error}", file=sys.stderr)
+                            print(f"  Type: {type(parse_error).__name__})", file=sys.stderr)
+                            print(f"  Message: {str(parse_error)}", file=sys.stderr)
+                            print(f"  Stacktrace:", file=sys.stderr)
+                            traceback.print_exc(file=sys.stderr)
                             continue
             
             # 残りのチャンクを追加
