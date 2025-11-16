@@ -83,3 +83,8 @@ Once setup completes, the MCP server will start. By default, it listens on port 
 Local-Wikipedia uses the official Wikipedia dump data for pages and redirects, along with the Markdown-formatted full-text dataset published at [HuggingFaceFW/finewiki · Datasets at Hugging Face](https://huggingface.co/datasets/HuggingFaceFW/finewiki#available-subsets).
 
 For full-text search, it uses PGroonga to provide fast, memory-efficient search in both Japanese and English.
+
+## Important Notes
+
+- The current Local-Wikipedia implementation is not designed for public API access. When exposing the API externally, we recommend making appropriate code modifications for security purposes.
+- Wikipedia content is licensed under both the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0) and the GNU Free Documentation License (GFDL).

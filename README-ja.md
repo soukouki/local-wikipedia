@@ -82,3 +82,7 @@ Local-Wikipediaでは、Wikipedia自身が公開しているページ・リダ�
 
 全文検索にはPGroongaを利用し、日本語でも英語でも高速に、メモリ使用量を抑えて検索できるようにしています。
 
+## 注意点
+
+- 現在のLocal-Wikipediaは、APIを外部公開する形での利用を想定していません。APIを外部公開する際には、セキュリティのために適宜コードを修正することを推奨します。
+- ウィキペディアのコンテンツは Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0) および GNU Free Documentation License (GFDL) の下にライセンスされています。
