@@ -38,8 +38,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
     datasets \
     huggingface_hub \
+    requests \
     psycopg2-binary \
-    mcp \
+    "mcp<2" \
     pyyaml \
     starlette \
     uvicorn

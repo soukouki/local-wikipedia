@@ -36,10 +36,17 @@ CACHE_DIR = DATA_DIR / "cache"
 # グローバル設定
 # ========================================
 NUM_CONSUMERS = os.cpu_count() or 4
+# Concurrent inserts into documents can deadlock on the UNIQUE(page_id,
+# language_code) index. Keep document writes serialized by default; this can
+# be increased deliberately with DOCUMENT_CONSUMERS after validating a DB.
+DOCUMENT_CONSUMERS = max(1, int(os.environ.get("DOCUMENT_CONSUMERS", "1")))
 DATA_QUEUE = Queue(maxsize=NUM_CONSUMERS * 2)
 CHUNK_ITEMS = 2000
 MAX_RETRIES = 10
 DB_PARAMS = dict(host="localhost", port=5432, dbname="finewiki", user="dbuser", password="dbpass")
+WIKIMEDIA_HEADERS = {
+    "User-Agent": "local-wikipedia/1.0 (self-hosted MCP server; Wikimedia dump downloader)"
+}
 
 
 # ========================================
@@ -412,7 +419,12 @@ def page_producer(lang_code: str, meta: Dict) -> Tuple[str, bool, int]:
             # ダウンロード
             if not os.path.exists(local_gz_file):
                 print(f"  Downloading {download_url}...")
-                response = requests.get(download_url, stream=True, timeout=60)
+                response = requests.get(
+                    download_url,
+                    headers=WIKIMEDIA_HEADERS,
+                    stream=True,
+                    timeout=60,
+                )
                 response.raise_for_status()
                 
                 total_size = int(response.headers.get('content-length', 0))
@@ -777,7 +789,7 @@ def execute_document_downloads(plan: Dict):
     
     print("\n--- Executing Document Downloads ---")
     print(f"Total items to process: {plan['total_items']:,}")
-    print(f"Using {NUM_CONSUMERS} parallel DB writers.")
+    print(f"Using {DOCUMENT_CONSUMERS} document DB writer(s).")
     
     # インデックスを削除してパフォーマンス向上
     drop_indexes()
@@ -791,7 +803,10 @@ def execute_document_downloads(plan: Dict):
     producer_results = []
     
     with ThreadPoolExecutor(max_workers=NUM_CONSUMERS + 1) as executor:
-        consumer_futures = [executor.submit(document_consumer, DB_PARAMS, progress) for _ in range(NUM_CONSUMERS)]
+        consumer_futures = [
+            executor.submit(document_consumer, DB_PARAMS, progress)
+            for _ in range(DOCUMENT_CONSUMERS)
+        ]
         producer_futures = [executor.submit(document_producer, lang_code, meta) for lang_code, meta in targets]
 
         # 各producerの結果を個別に収集
@@ -873,7 +888,12 @@ def redirection_producer(lang_code: str, meta: Dict) -> Tuple[str, bool, int]:
             # ダウンロード
             if not os.path.exists(local_gz_file):
                 print(f"  Downloading {download_url}...")
-                response = requests.get(download_url, stream=True, timeout=60)
+                response = requests.get(
+                    download_url,
+                    headers=WIKIMEDIA_HEADERS,
+                    stream=True,
+                    timeout=60,
+                )
                 response.raise_for_status()
                 
                 total_size = int(response.headers.get('content-length', 0))
